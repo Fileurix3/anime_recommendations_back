@@ -8,6 +8,7 @@ interface AnimeAttributes {
   titleEng: string;
   synopsis: string;
   episodes: number;
+  aired: number;
   rating: string;
   genres: string[];
 }
@@ -19,6 +20,7 @@ export class AnimeModel extends Model<AnimeAttributes> implements AnimeAttribute
   public titleEng!: string;
   public synopsis!: string;
   public episodes!: number;
+  public aired!: number;
   public rating!: string;
   public genres!: string[];
 }
@@ -44,6 +46,9 @@ AnimeModel.init(
       type: DataTypes.STRING,
     },
     episodes: {
+      type: DataTypes.INTEGER,
+    },
+    aired: {
       type: DataTypes.INTEGER,
     },
     rating: {

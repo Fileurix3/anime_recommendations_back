@@ -13,6 +13,7 @@ CREATE TABLE anime (
   "titleEng" TEXT NOT NULL,
   synopsis TEXT NOT NULL,
   episodes INTEGER NOT NULL,
+  aired INTEGER NOT NULL,
   rating TEXT NOT NULL,
   genres TEXT[] NOT NULL 
 );
