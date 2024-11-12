@@ -1,3 +1,5 @@
+import { stopWords } from "./stop_words.js";
+
 export class RecommendationUtils {
   protected allGenres: string[] = [
     "Supernatural",
@@ -27,7 +29,8 @@ export class RecommendationUtils {
     return text
       .toLowerCase()
       .split(/\s+/)
-      .map((word) => word.replace(/[^a-zA-Z0-9]/g, ""));
+      .map((word) => word.replace(/[^a-zA-Z0-9]/g, ""))
+      .filter((word) => !stopWords.has(word));
   }
 
   protected createDictionary(texts: string[]): string[] {
