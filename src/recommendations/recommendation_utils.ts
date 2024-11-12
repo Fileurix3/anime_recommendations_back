@@ -1,4 +1,28 @@
 export class RecommendationUtils {
+  protected allGenres: string[] = [
+    "Supernatural",
+    "Drama",
+    "Sci-Fi",
+    "Suspense",
+    "Avant Garde",
+    "Mystery",
+    "Adventure",
+    "Romance",
+    "Comedy",
+    "Hentai",
+    "UNKNOWN",
+    "Action",
+    "Award Winning",
+    "Fantasy",
+    "Girls Love",
+    "Slice of Life",
+    "Sports",
+    "Ecchi",
+    "Horror",
+    "Gourmet",
+    "Erotica",
+  ];
+
   protected preprocessText(text: string): string[] {
     return text
       .toLowerCase()

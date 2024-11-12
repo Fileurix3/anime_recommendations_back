@@ -4,33 +4,10 @@ import { UserFavoriteModel } from "../models/user_favorite_model.js";
 import { handlerError } from "../index.js";
 import { AnimeModel } from "../models/anime_model.js";
 import { Op } from "@sequelize/core";
+import redisClient from "../database/redis.js";
 import jwt from "jsonwebtoken";
 
 export class RecommendationsServices extends RecommendationUtils {
-  private allGenres: string[] = [
-    "Supernatural",
-    "Drama",
-    "Sci-Fi",
-    "Suspense",
-    "Avant Garde",
-    "Mystery",
-    "Adventure",
-    "Romance",
-    "Comedy",
-    "Hentai",
-    "UNKNOWN",
-    "Action",
-    "Award Winning",
-    "Fantasy",
-    "Girls Love",
-    "Slice of Life",
-    "Sports",
-    "Ecchi",
-    "Horror",
-    "Gourmet",
-    "Erotica",
-  ];
-
   public recommendations = async (req: Request, res: Response): Promise<void> => {
     const token = req.cookies.token;
 
@@ -38,28 +15,43 @@ export class RecommendationsServices extends RecommendationUtils {
       const tokenDecode = jwt.decode(token);
       const userId: string = (tokenDecode as { userId: string }).userId;
 
-      const excludeWhenRecommending: number[] = [];
-      const genresUserFavoriteAnime: string[] = [];
+      const [redisUser, userFavoritesAnimeData] = await Promise.all([
+        redisClient.get(userId),
 
-      const userFavoritesAnime = (
-        await UserFavoriteModel.findAll({
-          where: {
-            userId: userId,
-          },
-          include: [
-            {
-              model: AnimeModel,
-              required: true,
-            },
-          ],
+        UserFavoriteModel.findAll({
+          where: { userId },
+          include: [{ model: AnimeModel, required: true }],
           attributes: [],
-        })
-      ).map((anime) => {
-        genresUserFavoriteAnime.push(...anime.animeModel.genres);
-        excludeWhenRecommending.push(anime.animeModel.id);
+        }),
+      ]);
 
-        return anime.animeModel;
+      const userFavoritesAnimeId: number[] = [];
+      const genresUserFavoriteAnime: string[] = [];
+      const synopsisFavoriteAnime: string[] = [];
+
+      const userFavoritesAnime = userFavoritesAnimeData.map((anime) => {
+        const animeModel = anime.animeModel;
+
+        genresUserFavoriteAnime.push(...animeModel.genres);
+        userFavoritesAnimeId.push(animeModel.id);
+        synopsisFavoriteAnime.push(animeModel.synopsis);
+
+        return animeModel;
       });
+
+      if (redisUser != null) {
+        const userFavoritesAnimeIdInRedis = JSON.parse(redisUser).userFavoritesAnimeId;
+        if (
+          userFavoritesAnimeId.length == userFavoritesAnimeIdInRedis.length &&
+          userFavoritesAnimeId.every((value, index) => value === userFavoritesAnimeIdInRedis[index])
+        ) {
+          res.status(200).json({
+            message: JSON.parse(redisUser).recommendedAnime,
+          });
+
+          return;
+        }
+      }
 
       const { lowerBound: lowerBoundEpisodes, upperBound: upperBoundEpisodes } =
         this.getLowerAndUpperBound(userFavoritesAnime.map((anime) => anime.episodes));
@@ -69,14 +61,10 @@ export class RecommendationsServices extends RecommendationUtils {
 
       const userGenresVector = this.createGenresVector(genresUserFavoriteAnime, this.allGenres);
 
-      const synopsisFavoriteAnime = userFavoritesAnime.map((anime) => anime.synopsis);
-
-      console.log(lowerBoundEpisodes);
-
       const recommendedAnime = await AnimeModel.findAll({
         where: {
           id: {
-            [Op.notIn]: excludeWhenRecommending,
+            [Op.notIn]: userFavoritesAnimeId,
           },
           episodes: {
             [Op.between]: [lowerBoundEpisodes, upperBoundEpisodes],
@@ -112,6 +100,16 @@ export class RecommendationsServices extends RecommendationUtils {
           .slice(0, 20)
           .map((anime) => anime.anime);
       });
+
+      const ttl = 7 * 24 * 60 * 60;
+      await redisClient.setEx(
+        userId,
+        ttl,
+        JSON.stringify({
+          userFavoritesAnimeId: userFavoritesAnimeId,
+          recommendedAnime: recommendedAnime,
+        })
+      );
 
       res.status(200).json({
         message: recommendedAnime,

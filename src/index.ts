@@ -1,6 +1,7 @@
 import { Response } from "express";
 import express from "express";
 import cookieParser from "cookie-parser";
+import redisClient from "./database/redis.js";
 import sequelize from "./database/db.js";
 import authRouter from "./auth/auth_router.js";
 import userRouter from "./user/user_router.js";
@@ -9,6 +10,15 @@ import recommendationsRouter from "./recommendations/recommendations_router.js";
 import "dotenv/config";
 
 const app = express();
+
+redisClient
+  .connect()
+  .then(() => {
+    console.log("Connected to Redis was successful");
+  })
+  .catch((err) => {
+    console.log("Redis error: " + err);
+  });
 
 sequelize
   .authenticate()
