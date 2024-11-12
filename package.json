@@ -1,5 +1,5 @@
 {
-  "name": "ani_reco",
+  "name": "anime_recommendations",
   "version": "1.0.0",
   "main": "build/index.js",
   "type": "module",
