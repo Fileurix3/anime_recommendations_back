@@ -33,13 +33,13 @@ Here's a brief overview of how it works:
 - Clone the repository
 
   ```
-  git clone https://github.com/Fileurix3/ani_reco.git
+  git clone https://github.com/Fileurix3/anime_recommendations.git
   ```
 
 - Go to the folder with this application
 
   ```
-  cd ani_reco
+  cd anime_recommendations
   ```
 
 - Install dependencies
