@@ -1,4 +1,4 @@
-# anime_recommendations
+# anime_recommendations_back
 
 A backend application for recommending anime based on user preferences
 
@@ -33,13 +33,13 @@ Here's a brief overview of how it works:
 - Clone the repository
 
   ```
-  git clone https://github.com/Fileurix3/anime_recommendations.git
+  git clone https://github.com/Fileurix3/anime_recommendations_back.git
   ```
 
 - Go to the folder with this application
 
   ```
-  cd anime_recommendations
+  cd anime_recommendations_back
   ```
 
 - Install dependencies
