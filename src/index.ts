@@ -13,19 +13,13 @@ const app = express();
 
 redisClient
   .connect()
-  .then(() => {
-    console.log("Connected to Redis was successful");
-  })
-  .catch((err) => {
-    console.log("Redis error: " + err);
-  });
+  .then(() => console.log("Connected to Redis was successful"))
+  .catch((err) => console.log("Redis error: " + err));
 
 sequelize
   .authenticate()
   .then(() => console.log("Connection to database was successful"))
-  .catch((err: unknown) => {
-    console.log(err);
-  });
+  .catch((err) => console.log(err));
 
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));

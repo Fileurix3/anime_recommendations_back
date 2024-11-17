@@ -44,8 +44,9 @@ export class AuthServices {
       );
 
       res.cookie("token", token, {
-        httpOnly: true,
         maxAge: 10 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
       });
 
       res.status(201).json({
@@ -94,8 +95,9 @@ export class AuthServices {
       );
 
       res.cookie("token", token, {
-        httpOnly: true,
         maxAge: 7 * 26 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
       });
 
       res.status(200).json({
