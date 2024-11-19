@@ -59,6 +59,67 @@ Here's a brief overview of how it works:
   npm start
   ```
 
+## Endpoints
+
+- #### Auth
+
+  - register
+
+    ```bash
+    POST /auth/register
+    {"name": "example name", "password": "example password"}
+    ```
+
+  - login
+
+    ```bash
+    POST /auth/login
+    {"name": "example name", "password": "example password"}
+    ```
+
+  - logout
+
+    ```bash
+    GET /auth/logout
+    ```
+
+- #### Users
+
+  - add or remove favourite anime
+
+    ```bash
+    POST user/change/anime/favorites
+    {"animeId": "animeId"}
+    ```
+
+  - get user profile by name
+
+    ```bash
+    GET user/profile/:userName
+    ```
+
+- #### Anime
+
+  - search for an anime by title excerpt
+
+    ```bash
+    GET anime/search/:searchParams
+    ```
+
+  - get anime by id
+
+    ```bash
+    GET anime/get/:animeId
+    ```
+
+- #### Recommendations
+
+  - get anime recommendations
+
+    ```bash
+    GET recommendations/anime
+    ```
+
 ## Commands
 
 - **npm run build**: Compiles TypeScript files to JavaScript.
