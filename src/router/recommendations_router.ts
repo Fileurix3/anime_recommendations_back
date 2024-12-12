@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { RecommendationsServices } from "./recommendations_services.js";
+import { RecommendationsServices } from "../services/recommendations_services.js";
 import { authMiddleware } from "../middleware/auth_middleware.js";
 
 const router = Router();

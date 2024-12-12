@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AnimeServices } from "./anime_services.js";
+import { AnimeServices } from "../services/anime_services.js";
 
 const router = Router();
 const animeServices = new AnimeServices();
