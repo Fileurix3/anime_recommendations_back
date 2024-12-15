@@ -51,8 +51,6 @@ export function handlerError(err: unknown, res: Response): Response {
 }
 
 export function decodeJwt(token: string): Record<string, string> {
-  let userId;
-
   jwt.verify(token, process.env.JWT_SECRET as string, (err: unknown) => {
     if (err) {
       throw new CustomError("Invalid token", 403);
