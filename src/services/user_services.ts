@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { CustomError, handlerError } from "../index.js";
+import { CustomError, decodeJwt, handlerError } from "../index.js";
 import { AnimeModel } from "../models/anime_model.js";
 import { UserFavoriteModel } from "../models/user_favorite_model.js";
 import { UsersModel } from "../models/users_model.js";
-import jwt from "jsonwebtoken";
 
 export class UserServices {
   public async addOrDeleteFavoriteAnime(req: Request, res: Response): Promise<void> {
-    const token = req.cookies.token;
+    const userToken = req.cookies.token;
     const { animeId } = req.body;
+
     try {
       if (!animeId || isNaN(Number(animeId))) {
         throw new CustomError("invalid animeId", 400);
@@ -24,8 +24,7 @@ export class UserServices {
         throw new CustomError("anime not found", 404);
       }
 
-      const decodeToken = jwt.decode(token);
-      const userId = (decodeToken as { userId: string }).userId;
+      const userId = decodeJwt(userToken).userId;
 
       const isUserFavoriteAnime = await UserFavoriteModel.findOne({
         where: {
