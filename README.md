@@ -17,14 +17,14 @@ Here's a brief overview of how it works:
 
    - **Genres**: The system creates a genre vector, assigning 1 for present genres and 0 for absent ones
 
-   - **Episodes and Air Date**: The system calculates the minimum and maximum episode count and air dates from the user's favorites to find anime with similar length and release periods
+   - **Episodes and Air Date**: The system calculates the standard deviation for the number of episodes and air dates from user-selected anime to find anime of the same duration and release period
 
 3. **Recommendation Generation**:
 
    - **Filtering**: It filters out anime already in the user’s favorites and limits recommendations to similar episode counts and air dates.
-   - **Cosine Similarity**: Calculates similarity based on genre vectors and synopsis content using cosine similarity for more relevant recommendations.
+   - **Cosine Similarity**: Calculates similarity based on genre vectors and synopsis content using cosine similarity for more relevant recommendations
 
-4. **Caching**: After calculating recommendations, it stores the result in Redis with a TTL of one week.
+4. **Caching**: After calculating recommendations, it stores the result in Redis with a TTL of 24h
 
 5. **Response**: Finally, the system returns a list of recommended anime to the user.
 
@@ -58,75 +58,6 @@ Here's a brief overview of how it works:
   ```
   npm start
   ```
-
-## Endpoints
-
-- #### Auth
-
-  - register
-
-    ```bash
-    POST /auth/register
-    {"name": "example name", "password": "example password"}
-    ```
-
-  - login
-
-    ```bash
-    POST /auth/login
-    {"name": "example name", "password": "example password"}
-    ```
-
-  - logout
-
-    ```bash
-    GET /auth/logout
-    ```
-
-- #### Users
-
-  - add or remove favourite anime
-
-    ```bash
-    POST user/change/anime/favorites
-    {"animeId": "animeId"}
-    ```
-
-  - get user profile by name
-
-    ```bash
-    GET user/profile/:userName
-    ```
-
-- #### Anime
-
-  - search for an anime by title excerpt
-
-    ```bash
-    GET anime/search/:searchParams
-    ```
-
-  - get anime by id
-
-    ```bash
-    GET anime/get/:animeId
-    ```
-
-- #### Recommendations
-
-  - get anime recommendations
-
-    ```bash
-    GET recommendations/anime
-    ```
-
-## Commands
-
-- **npm run build**: Compiles TypeScript files to JavaScript.
-- **npm start**: Runs the compiled JavaScript code.
-- **npm run test**: Runs tests.
-- **npm run test:(testFolder)**: Runs tests located in the `test` directory.
-- **npm run dev**: Starts the server with `nodemon` for auto-reloading on file changes.
 
 ## Dependencies
 
