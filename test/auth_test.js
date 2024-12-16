@@ -9,7 +9,7 @@ describe("auth test", () => {
   it("if password is less than 6 characters", async () => {
     const res = await request(app)
       .post("/auth/register")
-      .send({ name: "testUser", password: "12345" });
+      .send({ name: "testUser", password: "12345", email: "test@gmail.com" });
 
     expect(res.status).to.equal(400);
 
@@ -19,7 +19,7 @@ describe("auth test", () => {
   it("should create a new user", async () => {
     const res = await request(app)
       .post("/auth/register")
-      .send({ name: "testUser", password: "testUser" });
+      .send({ name: "testUser", password: "testUser", email: "test@gmail.com" });
 
     expect(res.status).to.equal(201);
 
@@ -27,20 +27,30 @@ describe("auth test", () => {
     expect(res.body).to.have.property("token").that.is.a("string");
   });
 
-  it("if user already exists", async () => {
+  it("if name already exists", async () => {
     const res = await request(app)
       .post("/auth/register")
-      .send({ name: "testUser", password: "testUser" });
+      .send({ name: "testUser", password: "testUser", email: "test1@gmail.com" });
 
     expect(res.status).to.equal(400);
 
-    expect(res.body).to.have.property("message", "User with this name already exists");
+    expect(res.body).to.have.property("message", "User with this name or email already exists");
+  });
+
+  it("if email already exists", async () => {
+    const res = await request(app)
+      .post("/auth/register")
+      .send({ name: "testUser1", password: "testUser", email: "test@gmail.com" });
+
+    expect(res.status).to.equal(400);
+
+    expect(res.body).to.have.property("message", "User with this name or email already exists");
   });
 
   it("login user", async () => {
     const res = await request(app)
       .post("/auth/login")
-      .send({ name: "testUser", password: "testUser" });
+      .send({ email: "test@gmail.com", password: "testUser" });
 
     token = res.body.token;
 
@@ -50,24 +60,24 @@ describe("auth test", () => {
     expect(res.body).to.have.property("message", "Login successful");
   });
 
-  it("if user has entered incorrect name", async () => {
+  it("if user has entered incorrect email", async () => {
     const res = await request(app)
       .post("/auth/login")
-      .send({ name: "userTest", password: "testUser" });
+      .send({ email: "test1@gmail.com", password: "testUser" });
 
     expect(res.status).to.equal(400);
 
-    expect(res.body).to.have.property("message", "Invalid name or password");
+    expect(res.body).to.have.property("message", "Invalid email or password");
   });
 
   it("if user has entered incorrect password", async () => {
     const res = await request(app)
       .post("/auth/login")
-      .send({ name: "testUser", password: "userTest" });
+      .send({ email: "test@gmail.com", password: "userTest" });
 
     expect(res.status).to.equal(400);
 
-    expect(res.body).to.have.property("message", "Invalid name or password");
+    expect(res.body).to.have.property("message", "Invalid email or password");
   });
 
   it("logout user", async () => {

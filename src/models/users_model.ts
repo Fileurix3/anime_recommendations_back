@@ -4,12 +4,14 @@ import sequelize from "../database/db.js";
 interface UserAttributes {
   id?: string;
   name: string;
+  email: string;
   password: string;
 }
 
 export class UsersModel extends Model<UserAttributes> implements UserAttributes {
   public id?: string;
   public name!: string;
+  public email!: string;
   public password!: string;
 
   public readonly createdAt!: Date;
@@ -25,6 +27,11 @@ UsersModel.init(
       unique: true,
     },
     name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,

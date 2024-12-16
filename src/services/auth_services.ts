@@ -1,41 +1,42 @@
 import { Request, Response } from "express";
 import { CustomError, handlerError } from "../index.js";
 import { UsersModel } from "../models/users_model.js";
+import { Op } from "@sequelize/core";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export class AuthServices {
   public async register(req: Request, res: Response): Promise<void> {
-    const { name, password } = req.body;
+    const { name, password, email } = req.body;
 
     try {
-      if (!name || !password) {
+      if (!name || !password || !email) {
         throw new CustomError("You have not filled in all the fields", 400);
       } else if (password.length < 6) {
         throw new CustomError("Password must be at least 6 characters long", 400);
       }
 
-      const existingName: UsersModel[] = await UsersModel.findAll({
+      const existingUser: UsersModel[] = await UsersModel.findAll({
         where: {
-          name: name,
+          [Op.or]: [{ name: name }, { email: email }],
         },
       });
 
-      if (existingName.length > 0) {
-        throw new CustomError("User with this name already exists", 400);
+      if (existingUser.length > 0) {
+        throw new CustomError("User with this name or email already exists", 400);
       }
 
       const hashPassword: string = await bcrypt.hash(password, 10);
 
       const newUser: UsersModel = await UsersModel.create({
         name: name,
+        email: email,
         password: hashPassword,
       });
 
       const token = jwt.sign(
         {
           userId: newUser.id,
-          userName: newUser.name,
         },
         process.env.JWT_SECRET as string,
         {
@@ -45,7 +46,7 @@ export class AuthServices {
 
       res.cookie("token", token, {
         maxAge: 10 * 60 * 60 * 1000,
-        httpOnly: false,
+        httpOnly: true,
         sameSite: "lax",
       });
 
@@ -60,33 +61,32 @@ export class AuthServices {
   }
 
   public async login(req: Request, res: Response): Promise<void> {
-    const { name, password } = req.body;
+    const { email, password } = req.body;
 
     try {
-      if (!name || !password) {
+      if (!email || !password) {
         throw new CustomError("You have not filled in all the fields", 400);
       }
 
       const user: UsersModel | null = await UsersModel.findOne({
         where: {
-          name: name,
+          email: email,
         },
       });
 
       if (user == null) {
-        throw new CustomError("Invalid name or password", 400);
+        throw new CustomError("Invalid email or password", 400);
       }
 
       const hashPassword: boolean = await bcrypt.compare(password, user.password);
 
       if (!hashPassword) {
-        throw new CustomError("Invalid name or password", 400);
+        throw new CustomError("Invalid email or password", 400);
       }
 
       const token = jwt.sign(
         {
           userId: user.id,
-          userName: user.name,
         },
         process.env.JWT_SECRET as string,
         {
@@ -96,7 +96,7 @@ export class AuthServices {
 
       res.cookie("token", token, {
         maxAge: 7 * 26 * 60 * 60 * 1000,
-        httpOnly: false,
+        httpOnly: true,
         sameSite: "lax",
       });
 

@@ -11,7 +11,7 @@ describe("users test", () => {
   before(async () => {
     const res = await request(app)
       .post("/auth/register")
-      .send({ name: "testUser", password: "testUser" });
+      .send({ name: "testUser", password: "testUser", email: "test@gmail.com" });
 
     userToken = res.body.token;
     userId = res.body.user.id;
@@ -30,7 +30,7 @@ describe("users test", () => {
     const res = await request(app)
       .post("/user/change/anime/favorites")
       .send({
-        animeId: 1,
+        animeId: "64232",
       })
       .set("Cookie", `token=${userToken}`);
 
@@ -45,7 +45,7 @@ describe("users test", () => {
     const res = await request(app)
       .post("/user/change/anime/favorites")
       .send({
-        animeId: 1,
+        animeId: "64232",
       })
       .set("Cookie", `token=${userToken}`);
 
