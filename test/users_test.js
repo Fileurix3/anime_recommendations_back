@@ -26,11 +26,23 @@ describe("users test", () => {
     expect(res.body).to.have.property("message", "Unauthorized");
   });
 
+  it("add anime in favorite if anime not fount", async () => {
+    const res = await request(app)
+      .post("/user/change/anime/favorites")
+      .send({
+        animeId: "0",
+      })
+      .set("Cookie", `token=${userToken}`);
+
+    expect(res.status).to.equal(404);
+    expect(res.body).to.have.property("message", "anime not found");
+  });
+
   it("add anime in favorite", async () => {
     const res = await request(app)
       .post("/user/change/anime/favorites")
       .send({
-        animeId: "64232",
+        animeId: "1",
       })
       .set("Cookie", `token=${userToken}`);
 
@@ -45,7 +57,7 @@ describe("users test", () => {
     const res = await request(app)
       .post("/user/change/anime/favorites")
       .send({
-        animeId: "64232",
+        animeId: "1",
       })
       .set("Cookie", `token=${userToken}`);
 
