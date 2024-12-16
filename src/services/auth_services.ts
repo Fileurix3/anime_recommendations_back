@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CustomError, handlerError } from "../index.js";
 import { UsersModel } from "../models/users_model.js";
 import { Op } from "@sequelize/core";
+import validator from "email-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -14,6 +15,10 @@ export class AuthServices {
         throw new CustomError("You have not filled in all the fields", 400);
       } else if (password.length < 6) {
         throw new CustomError("Password must be at least 6 characters long", 400);
+      }
+
+      if (!validator.validate(email)) {
+        throw new CustomError("Invalid email", 400);
       }
 
       const existingUser: UsersModel[] = await UsersModel.findAll({

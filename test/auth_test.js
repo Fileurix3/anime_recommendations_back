@@ -16,6 +16,16 @@ describe("auth test", () => {
     expect(res.body).to.have.property("message", "Password must be at least 6 characters long");
   });
 
+  it("if invalid email", async () => {
+    const res = await request(app)
+      .post("/auth/register")
+      .send({ name: "testUser", password: "testUser", email: "testUser123" });
+
+    expect(res.status).to.equal(400);
+
+    expect(res.body).to.have.property("message", "Invalid email");
+  });
+
   it("should create a new user", async () => {
     const res = await request(app)
       .post("/auth/register")
