@@ -59,6 +59,9 @@ Here's a brief overview of how it works:
   npm start
   ```
 
+## Used a datset
+   - **https://www.kaggle.com/datasets/dbdmobile/myanimelist-dataset** 
+
 ## Dependencies
 
 - **[@sequelize/core](https://www.npmjs.com/package/@sequelize/core)**  
