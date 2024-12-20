@@ -82,8 +82,14 @@ Here's a brief overview of how it works:
 - **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)**  
   for creating and verifying JSON Web Tokens (JWT) for secure user authentication
 
+- **[email-validator](https://www.npmjs.com/package/email-validator)**  
+  A simple module to validate an e-mail address
+
 - **[redis](https://www.npmjs.com/package/redis)**  
   for caching and managing session data
+
+- **[minio](https://www.npmjs.com/package/minio)**  
+  MinIO JavaScript Library for Amazon S3 Compatible Cloud Storage
 
 ## Dev Dependencies
 
