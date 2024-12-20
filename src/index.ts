@@ -1,13 +1,14 @@
 import { Response } from "express";
+import jwt from "jsonwebtoken";
 import express from "express";
 import cookieParser from "cookie-parser";
-import redisClient from "./database/redis.js";
 import sequelize from "./database/db.js";
+import redisClient from "./database/redis.js";
+import minioClient from "./database/minio.js";
+import animeRouter from "./router/anime_router.js";
 import authRouter from "./router/auth_router.js";
 import userRouter from "./router/user_router.js";
-import animeRouter from "./router/anime_router.js";
 import recommendationsRouter from "./router/recommendations_router.js";
-import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 const app = express();
@@ -21,6 +22,11 @@ sequelize
   .authenticate()
   .then(() => console.log("Connection to database was successful"))
   .catch((err) => console.log(err));
+
+minioClient
+  .listBuckets()
+  .then(() => console.log("Connected to Minio was successfully"))
+  .catch((err) => console.log("Minio error: " + err));
 
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));

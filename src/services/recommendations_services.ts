@@ -15,7 +15,9 @@ export class RecommendationsServices {
       const recommendationRedis = await redisClient.get(`${userId}`);
 
       if (recommendationRedis != null) {
+        const ttl = await redisClient.ttl(userId);
         res.status(200).json({
+          message: `You will be able to update your recommendations after ${ttl / 3600}h`,
           recommendation: JSON.parse(recommendationRedis),
         });
 
@@ -94,6 +96,7 @@ export class RecommendationsServices {
       await redisClient.setEx(`${userId}`, 24 * 60 * 60, JSON.stringify(recommendation));
 
       res.status(200).json({
+        message: "You will be able to update your recommendations after 24h",
         recommendation,
       });
     } catch (err: unknown) {
@@ -125,7 +128,7 @@ export class RecommendationsServices {
     return dotProduct / (magnitudeVec1 * magnitudeVec2);
   }
 
-  protected preprocessText(text: string): string[] {
+  private preprocessText(text: string): string[] {
     return text
       .toLowerCase()
       .replace(/[^a-zA-Z0-9\s]/g, "")
@@ -133,11 +136,11 @@ export class RecommendationsServices {
       .filter((word) => this.stopWords.has(word));
   }
 
-  protected createDictionary(texts: string[]): string[] {
+  private createDictionary(texts: string[]): string[] {
     return Array.from(new Set(texts.flatMap((text) => this.preprocessText(text))));
   }
 
-  protected createTextVector(text: string, dictionary: string[]) {
+  private createTextVector(text: string, dictionary: string[]) {
     const wordCounts = new Map(dictionary.map((word) => [word, 0]));
 
     this.preprocessText(text).forEach((word) => {

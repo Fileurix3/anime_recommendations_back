@@ -2,7 +2,7 @@ import { DataTypes, Model } from "@sequelize/core";
 import sequelize from "../database/db.js";
 
 interface AnimeAttributes {
-  id: number;
+  id?: number;
   imageUrl: string;
   title: string;
   titleEng: string;
@@ -14,7 +14,7 @@ interface AnimeAttributes {
 }
 
 export class AnimeModel extends Model<AnimeAttributes> implements AnimeAttributes {
-  public id!: number;
+  public id?: number;
   public imageUrl!: string;
   public title!: string;
   public titleEng!: string;
