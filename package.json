@@ -7,8 +7,6 @@
     "build": "npx tsc",
     "start": "node build/index.js",
     "test": "mocha ./test/*.js",
-    "test:auth": "mocha ./test/auth_test.js",
-    "test:users": "mocha ./test/users_test.js",
     "dev": "nodemon"
   },
   "keywords": [],

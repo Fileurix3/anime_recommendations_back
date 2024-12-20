@@ -188,7 +188,7 @@ export class AnimeServices {
       const updateAnime = await AnimeModel.update(fieldsToUpdate, { where: { id: animeId } });
 
       res.status(200).json({
-        massage: "Anime update successfully",
+        message: "Anime updated successfully",
         anime: updateAnime,
       });
     } catch (err: unknown) {
@@ -223,7 +223,7 @@ export class AnimeServices {
       });
 
       res.status(200).json({
-        message: "Image successfully delete",
+        message: "Anime successfully delete",
       });
     } catch (err: unknown) {
       handlerError(err, res);
