@@ -55,6 +55,12 @@ export class AuthServices {
         sameSite: "lax",
       });
 
+      res.cookie("registered", true, {
+        maxAge: 10 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+      });
+
       res.status(201).json({
         message: "User successfully registered",
         token: token,
@@ -105,6 +111,12 @@ export class AuthServices {
         sameSite: "lax",
       });
 
+      res.cookie("registered", true, {
+        maxAge: 7 * 26 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+      });
+
       res.status(200).json({
         token,
         message: "Login successful",
@@ -117,6 +129,7 @@ export class AuthServices {
   public async logout(req: Request, res: Response): Promise<void> {
     try {
       res.clearCookie("token");
+      res.clearCookie("registered");
       res.status(200).json({
         message: "logout successfully",
       });

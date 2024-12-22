@@ -6,6 +6,7 @@ interface UserAttributes {
   name: string;
   email: string;
   password: string;
+  avatar?: string;
   adminRights?: boolean;
 }
 
@@ -14,6 +15,7 @@ export class UsersModel extends Model<UserAttributes> implements UserAttributes 
   public name!: string;
   public email!: string;
   public password!: string;
+  public avatar?: string;
   public adminRights?: boolean;
 
   public readonly createdAt!: Date;
@@ -41,6 +43,11 @@ UsersModel.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: null,
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     adminRights: {
       type: DataTypes.BOOLEAN,

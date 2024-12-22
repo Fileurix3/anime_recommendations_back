@@ -5,6 +5,7 @@ import app from "../build/index.js";
 import { AnimeModel } from "../build/models/anime_model.js";
 import { Op } from "@sequelize/core";
 import minioClient from "../build/database/minio.js";
+import "dotenv/config";
 
 describe("anime test", () => {
   let userToken;
@@ -156,6 +157,6 @@ describe("anime test", () => {
       },
     });
 
-    await minioClient.removeObject("images", "testTitle.png");
+    await minioClient.removeObject(process.env.MINIO_IMAGES_BUCKET, "testTitle.png");
   });
 });

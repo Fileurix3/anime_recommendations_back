@@ -100,9 +100,15 @@ export class AnimeServices {
         .replace(/\s+/g, "-")}.png`;
 
       await minioClient
-        .putObject("images", imageName, instalImage.data, undefined, {
-          "Content-Type": "image/png",
-        })
+        .putObject(
+          String(process.env.MINIO_IMAGES_BUCKET),
+          imageName,
+          instalImage.data,
+          undefined,
+          {
+            "Content-Type": "image/png",
+          }
+        )
         .catch((err) => {
           throw new CustomError("Failed to upload image", 500);
         });
@@ -167,9 +173,15 @@ export class AnimeServices {
         }
 
         await minioClient
-          .putObject("images", nameInMinio, instalImage.data, undefined, {
-            "Content-Type": "image/png",
-          })
+          .putObject(
+            String(process.env.MINIO_IMAGES_BUCKET),
+            nameInMinio,
+            instalImage.data,
+            undefined,
+            {
+              "Content-Type": "image/png",
+            }
+          )
           .catch((err) => {
             throw new CustomError("Failed to upload image", 500);
           });
@@ -212,9 +224,11 @@ export class AnimeServices {
 
       const nameInMinio: string = anime.imageUrl.split("/").pop()!;
 
-      await minioClient.removeObject("images", nameInMinio).catch((err) => {
-        throw new CustomError("Failed to delete the image", 500);
-      });
+      await minioClient
+        .removeObject(String(process.env.MINIO_IMAGES_BUCKET), nameInMinio)
+        .catch((err) => {
+          throw new CustomError("Failed to delete the image", 500);
+        });
 
       await AnimeModel.destroy({
         where: {
